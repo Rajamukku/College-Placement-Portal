@@ -1,32 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Card, CardContent, Button, Grid, Chip, CircularProgress, Alert } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Button,
+  Grid,
+  Chip,
+  CircularProgress,
+  Alert
+} from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import { useUsers } from '../../contexts/UserContext';
 
 const CompanyDashboard = () => {
   const { authenticatedUser, API_URL } = useUsers();
   const [jobs, setJobs] = useState([]);
-  const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!authenticatedUser) return;
+    // Don't fetch data until we know who the authenticated user is
+    if (!authenticatedUser?._id) {
+        setLoading(false);
+        return;
+    }
     
-    const fetchDashboardData = async () => {
+    const fetchCompanyJobs = async () => {
         const token = localStorage.getItem('authToken');
         setLoading(true);
+        setError('');
         try {
-            // We need to fetch this company's jobs
-            const jobsRes = await fetch(`${API_URL}/jobs/company/${authenticatedUser._id}`, {
+            // Fetch this specific company's jobs using their ID
+            const response = await fetch(`${API_URL}/jobs/company/${authenticatedUser._id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            const jobsData = await jobsRes.json();
-            if (!jobsRes.ok) throw new Error("Could not fetch jobs.");
-            setJobs(jobsData);
-
-            // We also need applications to show the applicant count (can be optimized later)
-            // For now, let's just show jobs.
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.msg || "Could not fetch this company's jobs.");
+            }
+            setJobs(data);
         } catch (err) {
             setError(err.message);
         } finally {
@@ -34,11 +47,15 @@ const CompanyDashboard = () => {
         }
     };
 
-    fetchDashboardData();
+    fetchCompanyJobs();
   }, [authenticatedUser, API_URL]);
   
-  if (loading) return <CircularProgress />;
-  if (error) return <Alert severity="error">{error}</Alert>;
+  if (loading) {
+    return <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}><CircularProgress /></Box>;
+  }
+  if (error) {
+    return <Alert severity="error">{error}</Alert>;
+  }
 
   return (
     <Box>

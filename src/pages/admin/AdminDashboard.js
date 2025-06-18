@@ -22,7 +22,6 @@ const StatCard = ({ title, value, icon, color }) => (
 
 const AdminDashboard = () => {
     const { API_URL } = useUsers();
-    // Use local state for dashboard-specific data
     const [stats, setStats] = useState({ students: 0, companies: 0, openJobs: 0, placed: 0 });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -30,35 +29,35 @@ const AdminDashboard = () => {
     useEffect(() => {
         const fetchDashboardData = async () => {
             const token = localStorage.getItem('authToken');
+            if (!token) {
+                setError("Not authorized.");
+                setLoading(false);
+                return;
+            }
             try {
                 setLoading(true);
-                // We'll fetch all data needed for the dashboard.
-                // In a real large-scale app, you might have a dedicated `/api/dashboard/stats` endpoint.
-                const [usersRes, companiesRes, jobsRes, appsRes] = await Promise.all([
+                const [usersRes, companiesRes, jobsRes] = await Promise.all([
                     fetch(`${API_URL}/users`, { headers: { 'Authorization': `Bearer ${token}` } }),
                     fetch(`${API_URL}/companies`, { headers: { 'Authorization': `Bearer ${token}` } }),
-                    fetch(`${API_URL}/jobs`, { headers: { 'Authorization': `Bearer ${token}` } }),
-                    // This is a placeholder for getting all applications. We need to create this route.
-                    // For now, we'll mock the 'placed' count.
-                    // fetch(`${API_URL}/applications`, { headers: { 'Authorization': `Bearer ${token}` } })
+                    fetch(`${API_URL}/jobs/all`, { headers: { 'Authorization': `Bearer ${token}` } })
                 ]);
 
                 const usersData = await usersRes.json();
                 const companiesData = await companiesRes.json();
                 const jobsData = await jobsRes.json();
-                // const appsData = await appsRes.json();
 
                 if (!usersRes.ok || !companiesRes.ok || !jobsRes.ok) {
                     throw new Error("Failed to fetch dashboard data.");
                 }
 
-                // const placedCount = new Set(appsData.filter(a => a.status === 'Hired').map(a => a.student)).size;
+                // Placeholder for placed students count until a proper endpoint exists
+                const placedCount = 0; 
 
                 setStats({
                     students: usersData.length,
                     companies: companiesData.length,
                     openJobs: jobsData.filter(j => j.status === 'Open').length,
-                    placed: 0, // Mocked for now until we have an endpoint for all applications
+                    placed: placedCount,
                 });
 
             } catch (err) {

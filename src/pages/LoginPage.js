@@ -1,9 +1,20 @@
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
-  Box, Button, Grid, Paper, TextField, Typography, Radio, RadioGroup,
-  FormControlLabel, FormControl, FormLabel, Alert,
-  IconButton, InputAdornment
+  Box,
+  Button,
+  Grid,
+  Paper,
+  TextField,
+  Typography,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  FormLabel,
+  Alert,
+  IconButton,
+  InputAdornment
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
@@ -59,7 +70,6 @@ const LoginPage = ({ onLogin }) => {
             <FormControl component="fieldset" required>
               <FormLabel component="legend">* Role</FormLabel>
               <RadioGroup row aria-label="role" name="role" value={role} onChange={(e) => setRole(e.target.value)}>
-                {/* --- THIS IS THE FIX: value is "admin" (lowercase) --- */}
                 <FormControlLabel value="admin" control={<Radio />} label="Admin" />
                 <FormControlLabel value="student" control={<Radio />} label="Student" />
                 <FormControlLabel value="company" control={<Radio />} label="Company" />
