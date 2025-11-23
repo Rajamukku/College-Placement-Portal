@@ -1,0 +1,8 @@
+import React from 'react';
+import toast from 'react-hot-toast';
+const InterviewModal = ({ isOpen, onClose, studentName, onConfirm }) => {
+    if (!isOpen) return null;
+    const handleSchedule = () => { toast.success(`Interview scheduled for ${studentName}!`); onConfirm(); onClose(); };
+    return ( <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"><div className="bg-surface rounded-lg shadow-xl p-6 w-full max-w-lg"><h2 className="text-2xl font-bold text-primary mb-2">Schedule Interview</h2><p className="text-text-secondary mb-6">You are scheduling an interview for <span className="font-semibold text-text-primary">{studentName}</span>.</p><div className="space-y-4"><div><label className="block text-sm font-medium text-text-secondary">Interview Date</label><input type="date" className="mt-1 w-full form-input rounded-md border-gray-300"/></div><div><label className="block text-sm font-medium text-text-secondary">Interview Time</label><input type="time" className="mt-1 w-full form-input rounded-md border-gray-300"/></div><div><label className="block text-sm font-medium text-text-secondary">Notes (e.g., Platform link, Interviewer)</label><textarea rows="3" className="mt-1 w-full form-textarea rounded-md border-gray-300"></textarea></div></div><div className="mt-8 flex justify-end space-x-4"><button onClick={onClose} className="px-4 py-2 bg-gray-200 text-text-primary font-semibold rounded-lg hover:bg-gray-300">Cancel</button><button onClick={handleSchedule} className="px-4 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-opacity-90">Schedule & Notify</button></div></div></div>);
+};
+export default InterviewModal;
