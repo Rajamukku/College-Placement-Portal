@@ -13,7 +13,9 @@ const app = express();
 
 // CORS configuration
 const corsOptions = {
-    origin: 'http://localhost:3000',
+    origin:[ 'http://localhost:3000',
+      process.env.CLIENT_URL  // your Vercel URL
+    ].filter(Boolean),
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token'],
     credentials: true,
@@ -77,5 +79,5 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-    console.log(`CORS is enabled for: http://localhost:3000`);
+    console.log(`CORS enabled for:`, ['http://localhost:3000', process.env.CLIENT_URL].filter(Boolean));
 });

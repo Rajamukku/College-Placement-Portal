@@ -1,7 +1,19 @@
+# Dependencies
 node_modules/
-client/node_modules/
-server/node_modules/
+
+# Environment variables
 .env
-build/
-dist/
+
+# React production build
+/client/build
+
+# Uploaded files
+/server/uploads/
+
+# Logs
 *.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
